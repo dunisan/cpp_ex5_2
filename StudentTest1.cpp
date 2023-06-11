@@ -1,10 +1,14 @@
 #include "doctest.h"
 #include "sources/MagicalContainer.hpp"
 #include <stdexcept>
+#include <iostream>
+
 
 using namespace ariel;
 using namespace std;
 // Test case for adding elements to the MagicalContainer
+
+
 TEST_CASE("Adding elements to MagicalContainer") {
     MagicalContainer container;
 
@@ -21,7 +25,7 @@ TEST_CASE("Adding elements to MagicalContainer") {
     }
 }
 
-// Test case for removing elements from the MagicalContainer
+// // Test case for removing elements from the MagicalContainer
 TEST_CASE("Removing elements from MagicalContainer") {
     MagicalContainer container;
 
@@ -40,7 +44,7 @@ TEST_CASE("Removing elements from MagicalContainer") {
     }
 }
 
-// Test case for the AscendingIterator
+// // Test case for the AscendingIterator
 TEST_CASE("AscendingIterator") {
     MagicalContainer container;
     container.addElement(10);
@@ -52,6 +56,7 @@ TEST_CASE("AscendingIterator") {
 
     SUBCASE("Iterating over elements") {
         MagicalContainer::AscendingIterator it(container);
+        
         CHECK(*it == 10);
         ++it;
         CHECK(*it == 15);
@@ -188,7 +193,7 @@ TEST_CASE("Traversing AscendingIterator") {
     }
 }
 
-// Test case for traversing the PrimeIterator
+// // Test case for traversing the PrimeIterator
 TEST_CASE("Traversing PrimeIterator") {
     MagicalContainer container;
     container.addElement(1);
@@ -207,7 +212,7 @@ TEST_CASE("Traversing PrimeIterator") {
     }
 }
 
-// Test case for the SideCrossIterator
+// // Test case for the SideCrossIterator
 TEST_CASE("SideCrossIterator") {
     MagicalContainer container;
     container.addElement(1);
