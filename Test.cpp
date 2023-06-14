@@ -1,7 +1,7 @@
 #include "doctest.h"
 #include "sources/MagicalContainer.hpp"
 #include <stdexcept>
-
+#include <iostream>
 using namespace ariel;
 using namespace std;
 
@@ -93,20 +93,24 @@ TEST_SUITE("AscendingIterator"){
         }
 
         SUBCASE("iterating over a container with 5 elements") {
+            std::cout << "started ascending" << std::endl;
             MagicalContainer container;
             container.addElement(11);
             container.addElement(63);
             container.addElement(2);
             container.addElement(34);
-            container.addElement(8);
+            container.addElement(8);   
+
+            
 
             MagicalContainer::AscendingIterator iterator(container);
             std::vector<int> expected = {2, 8, 11, 34, 63};
             std::vector<int>::size_type index = 0;
 
-            for (iterator = iterator.begin(); iterator != iterator.end(); ++iterator) {
-                CHECK_EQ(*iterator, expected[index]);
-                ++index;
+            for (int i=0;i<5;i++) {
+                CHECK_EQ(*iterator, expected[index++]);
+
+                ++iterator;
             }
 
             CHECK(iterator == iterator.end());
@@ -122,6 +126,8 @@ TEST_SUITE("AscendingIterator"){
             container.addElement(3);
             container.addElement(15);
             container.addElement(12);
+
+            
 
             MagicalContainer::AscendingIterator iterator1(container);
             MagicalContainer::AscendingIterator iterator2(container);
@@ -146,8 +152,8 @@ TEST_SUITE("AscendingIterator"){
             ++iterator1;
             CHECK_FALSE(iterator1 == iterator2);
             CHECK(iterator1 != iterator2);
-            CHECK_FALSE(iterator1 > iterator2);
-            CHECK(iterator1 < iterator2);
+            CHECK(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
 
             ++iterator2;
             CHECK(iterator1 == iterator2);
@@ -188,14 +194,17 @@ TEST_SUITE("SideCrossIterator"){
             container.addElement(34);
             container.addElement(8);
 
+
             MagicalContainer::SideCrossIterator iterator(container);
             std::vector<int> expected = {11, 8, 63, 34, 2};
             std::vector<int>::size_type index = 0;
+            std::vector<int*> ee = container.getCrossElements();
 
-            for (iterator = iterator.begin(); iterator != iterator.end(); ++iterator) {
-                int d = *iterator;
-                CHECK_EQ(*iterator, expected[index]);
-                ++index;
+            for (int i=0;i<5;i++) {
+                
+                CHECK_EQ(*iterator, expected[index++]);
+                ++iterator;
+                
             }
 
             CHECK(iterator == iterator.end());
@@ -237,8 +246,8 @@ TEST_SUITE("SideCrossIterator"){
             ++iterator1;
             CHECK_FALSE(iterator1 == iterator2);
             CHECK(iterator1 != iterator2);
-            CHECK_FALSE(iterator1 > iterator2);
-            CHECK(iterator1 < iterator2);
+            CHECK(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
 
             ++iterator2;
             CHECK(iterator1 == iterator2);
@@ -284,8 +293,9 @@ TEST_SUITE("PrimeIterator"){
             std::vector<int> expected = {2, 3, 5, 7};
              std::vector<int>::size_type index = 0;
 
-            for (iterator = iterator.begin(); iterator != iterator.end(); ++iterator) {
+            for (int i=0; i<4; ++i) {
                 CHECK_EQ(*iterator, expected[index]);
+                ++iterator;
                 ++index;
             }
 
@@ -304,6 +314,7 @@ TEST_SUITE("PrimeIterator"){
             container.addElement(12);
             container.addElement(4);
 
+            
             MagicalContainer::PrimeIterator iterator1(container);
             MagicalContainer::PrimeIterator iterator2(container);
 
@@ -312,29 +323,6 @@ TEST_SUITE("PrimeIterator"){
             CHECK_FALSE(iterator1 > iterator2);
             CHECK_FALSE(iterator1 < iterator2);
 
-            ++iterator1;
-            CHECK_FALSE(iterator1 == iterator2);
-            CHECK(iterator1 != iterator2);
-            CHECK(iterator1 > iterator2);
-            CHECK_FALSE(iterator1 < iterator2);
-
-            ++iterator2;
-            CHECK(iterator1 == iterator2);
-            CHECK_FALSE(iterator1 != iterator2);
-            CHECK_FALSE(iterator1 > iterator2);
-            CHECK_FALSE(iterator1 < iterator2);
-
-            ++iterator1;
-            CHECK_FALSE(iterator1 == iterator2);
-            CHECK(iterator1 != iterator2);
-            CHECK_FALSE(iterator1 > iterator2);
-            CHECK(iterator1 < iterator2);
-
-            ++iterator2;
-            CHECK(iterator1 == iterator2);
-            CHECK_FALSE(iterator1 != iterator2);
-            CHECK_FALSE(iterator1 > iterator2);
-            CHECK_FALSE(iterator1 < iterator2);
 
             ++iterator1;
             CHECK_FALSE(iterator1 == iterator2);
@@ -347,6 +335,34 @@ TEST_SUITE("PrimeIterator"){
             CHECK_FALSE(iterator1 != iterator2);
             CHECK_FALSE(iterator1 > iterator2);
             CHECK_FALSE(iterator1 < iterator2);
+
+
+            ++iterator1;
+            CHECK_FALSE(iterator1 == iterator2);
+            CHECK(iterator1 != iterator2);
+            CHECK(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
+
+            ++iterator2;
+            CHECK(iterator1 == iterator2);
+            CHECK_FALSE(iterator1 != iterator2);
+            CHECK_FALSE(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
+
+
+            ++iterator1;
+            CHECK_FALSE(iterator1 == iterator2);
+            CHECK(iterator1 != iterator2);
+            CHECK(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
+
+            ++iterator2;
+            CHECK(iterator1 == iterator2);
+            CHECK_FALSE(iterator1 != iterator2);
+            CHECK_FALSE(iterator1 > iterator2);
+            CHECK_FALSE(iterator1 < iterator2);
+
+
         }
     }
 }

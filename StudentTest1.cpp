@@ -124,6 +124,7 @@ TEST_CASE("PrimeIterator") {
         CHECK(*it == 5);
         ++it;
         CHECK(it == it.end());
+
     }
 
     SUBCASE("Iterating over an empty container") {

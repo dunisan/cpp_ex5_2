@@ -2,12 +2,19 @@
 
 namespace ariel {
 
+// ==================================================
+// Magical Container functions
+// ==================================================
+
     void MagicalContainer::addElement(int element) {
         elements.push_back(element);
+        _psorted.insert(_psorted.begin(), elements.size() - 1);
         updateCross();
         updatePrime();
         updateSorted();
-        sortElements();
+
+        
+       
     }
 
     void MagicalContainer::removeElement(int element) {
@@ -16,10 +23,12 @@ namespace ariel {
         if (itr == elements.end()) {
             throw std::runtime_error("The element doesn't exist.");
         }
-        
         // Remove the element
         elements.erase(itr);
-        
+        size_t position = static_cast<size_t>(std::distance(elements.begin(), itr));
+        auto eraseIterator = _psorted.begin() + static_cast<std::ptrdiff_t>(position);
+        _psorted.erase(eraseIterator);
+
         // Update the vectors of pointers 
         updateSorted();
         updatePrime();
@@ -30,10 +39,14 @@ namespace ariel {
         return elements.size();
     }
 
+// *****************************
+// update function 
+
     void MagicalContainer::updateCross() {
         _pcross.clear();
         auto begin = elements.begin();
         auto end = --elements.end();
+
 
         while (begin < end) {
             _pcross.push_back(&(*begin));
@@ -56,15 +69,52 @@ namespace ariel {
     }
 
     void MagicalContainer::updateSorted() {
-        _psorted.clear();
-        for (auto itr = elements.begin(); itr != elements.end(); ++itr) {
-            _psorted.push_back(&(*itr));
+        // _psorted.clear();
+        // for (auto itr = elements.begin(); itr != elements.end(); ++itr) {
+        //     _psorted.push_back(&(*itr));
+        // }
+
+        std::size_t length = _psorted.size(); // get size of vector 
+
+        // bubble sort - every time we run it - we run it on a sorted vector.
+        // except for the first - so we need at most n comperisions. O(N) 
+        // for(std::size_t i=0; i <  _psorted.size();i++){
+        //     std::cout<<*_psorted[i] << "  "; 
+        // }
+        //             std::cout<< std::endl; 
+
+
+        for (std::size_t i = 0; i < length; ++i) {
+            bool swapped = false;
+            
+            for (std::size_t j = 0; j < length - i - 1; j++) {
+                if (elements[(_psorted[j])] > elements[(_psorted[j+1])]) {
+                    size_t temp = _psorted[j];
+                    _psorted[j] = _psorted[j+1]; 
+                    _psorted[j+1] = temp; 
+                    swapped = true;
+                }
+                else{
+                    swapped = true; 
+                    break; 
+                }
+            }
+            
+            // If no swaps were made in the inner loop, the array is already sorted
+            if (!swapped) {
+                break;
+            }
         }
+
+        
     }
 
     void MagicalContainer::sortElements() {
-        std::size_t length = elements.size();
         
+        std::size_t length = elements.size(); // get size of vector 
+
+        // bubble sort - every time we run it - we run it on a sorted vector.
+        // except for the first - so we need at most n comperisions. O(N) 
         for (std::size_t i = 0; i < length; ++i) {
             bool swapped = false;
             
@@ -81,11 +131,16 @@ namespace ariel {
             }
         }
     }
+// ==================================================
+//  AscendingIterator functions
+// ==================================================
 
-    // AscendingIterator functions
+    // ***************
+    // oprators
+
     MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator=(const AscendingIterator& other) {
         if (&container != &other.container) {
-            throw std::runtime_error("You can't assign iterators from different containers");
+            throw std::runtime_error("assignment is not valid - different containers");
         }
 
         iter = other.iter;
@@ -94,19 +149,22 @@ namespace ariel {
 
     bool MagicalContainer::AscendingIterator::operator==(const AscendingIterator& other) const {
         if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
+            throw std::invalid_argument("compering is not valid - different containers");
         }
-        
+
         return iter == other.iter;
     }
 
     bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator& other) const {
+        if (&container != &other.container) {
+            throw std::invalid_argument("compering is not valid - different containers");
+        }
         return !(*this == other);
     }
 
     bool MagicalContainer::AscendingIterator::operator<(const AscendingIterator& other) const {
         if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
+            throw std::invalid_argument("compering is not valid - different containers");
         }
 
         return iter < other.iter;
@@ -114,7 +172,7 @@ namespace ariel {
 
     bool MagicalContainer::AscendingIterator::operator>(const AscendingIterator& other) const {
         if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
+            throw std::invalid_argument("compering is not valid - different containers");
         }
 
         return iter > other.iter;
@@ -125,7 +183,7 @@ namespace ariel {
             throw std::out_of_range("Iterator out of range");
         }
 
-        return **iter;
+        return this->container.elements[*iter];
     }
 
     MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator++() {
@@ -136,6 +194,8 @@ namespace ariel {
         ++iter;
         return *this;
     }
+    // ****************
+    // Begin and end functions 
 
     MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin() {
         iter = container._psorted.begin();
@@ -147,7 +207,10 @@ namespace ariel {
         return *this;
     }
 
-    // PrimeIterator functions
+// ==================================================
+// PrimeIterator functions
+// ==================================================
+
     bool MagicalContainer::PrimeIterator::operator==(const PrimeIterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("Comparing iterators from different containers");
@@ -157,6 +220,9 @@ namespace ariel {
     }
 
     bool MagicalContainer::PrimeIterator::operator!=(const PrimeIterator& other) const {
+        if (&container != &other.container) {
+            throw std::invalid_argument("Comparing iterators from different containers");
+        }
         return !(*this == other);
     }
 
@@ -212,7 +278,12 @@ namespace ariel {
         return *this;
     }
 
-    // SideCrossIterator functions
+
+
+// ==================================================
+// SideCrossIterator functions
+// ==================================================
+
     bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("Comparing iterators from different containers");
@@ -222,6 +293,10 @@ namespace ariel {
     }
 
     bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator& other) const {
+        if (&container != &other.container) {
+            throw std::invalid_argument("Comparing iterators from different containers");
+        }
+
         return !(*this == other);
     }
 
@@ -277,6 +352,12 @@ namespace ariel {
         return *this;
     }
 
+
+
+
+// ==================================================
+// help  functions
+// ==================================================
     bool isPrime(int num) {
         if (num < 2) {
             return false;
@@ -299,4 +380,4 @@ namespace ariel {
         return true;
     }
 
-}  // namespace ariel
+}  

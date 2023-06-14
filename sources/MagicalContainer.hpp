@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream> 
 #include <cmath>
+#include <iostream>
 
 namespace ariel {
 
@@ -12,7 +13,8 @@ namespace ariel {
 
     private:
         std::vector<int> elements;
-        std::vector<int*> _psorted;  
+        std::vector<size_t> _pelements;  
+        std::vector<size_t> _psorted;  
         std::vector<int*> _pprime; 
         std::vector<int*> _pcross; 
 
@@ -39,11 +41,16 @@ namespace ariel {
         void updateSorted();
         void sortElements();
 
+        std::vector<int> getElements(){return elements;}
+        std::vector<size_t> getSortedElements(){return _psorted;}
+        std::vector<int*> getCrossElements(){return _pcross;}
+
+
         class AscendingIterator {
 
         private:
             MagicalContainer &container;
-            std::vector<int*>::iterator iter;
+            std::vector<size_t>::iterator iter;
 
         public:
             // Constructors and assignment operator
@@ -57,9 +64,7 @@ namespace ariel {
             bool operator!=(const AscendingIterator& other) const;
             bool operator<(const AscendingIterator& other) const;
             bool operator>(const AscendingIterator& other) const;
-
             int operator*() const;
-
             AscendingIterator& operator++();
 
             // Begin and end of iterator
@@ -85,9 +90,7 @@ namespace ariel {
             bool operator!=(const PrimeIterator& other) const;
             bool operator<(const PrimeIterator& other) const;
             bool operator>(const PrimeIterator& other) const;
-
             int operator*() const;
-
             PrimeIterator& operator++();
 
             // Begin and end iterators
@@ -113,7 +116,6 @@ namespace ariel {
             bool operator!=(const SideCrossIterator& other) const;
             bool operator<(const SideCrossIterator& other) const;
             bool operator>(const SideCrossIterator& other) const;
-
             int operator*() const;
             SideCrossIterator& operator++();
 
@@ -122,4 +124,6 @@ namespace ariel {
             SideCrossIterator end();
             };
     };
+
 }
+
