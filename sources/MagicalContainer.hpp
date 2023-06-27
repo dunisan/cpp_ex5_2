@@ -3,20 +3,23 @@
 #include <vector>
 #include <iostream> 
 #include <cmath>
-#include <iostream>
 
 namespace ariel {
 
-    bool isPrime(int);
+
+
+
+// ==================================================
+//              Magical Container
+// ==================================================
+
 
     class MagicalContainer {
 
     private:
-        std::vector<int> elements;
-        std::vector<size_t> _pelements;  
-        std::vector<size_t> _psorted;  
-        std::vector<int*> _pprime; 
-        std::vector<int*> _pcross; 
+        std::vector<int> elements; // The vector of the elements
+        std::vector<int*> _pprime; // Vector of pointers to prime elements. 
+        std::vector<int*> _pcross; // Vector of pointers to cross elements. 
 
     public:
 
@@ -24,12 +27,7 @@ namespace ariel {
         MagicalContainer() = default;
         MagicalContainer(const MagicalContainer& other) : elements(other.elements) {}
         ~MagicalContainer() = default;
-        MagicalContainer& operator=(const MagicalContainer& other) {
-            if (this != &other) {
-                elements = other.elements;
-            }
-            return *this;
-        }
+        MagicalContainer& operator=(const MagicalContainer& other);
 
         // Container functions
         void addElement(int element);
@@ -41,21 +39,22 @@ namespace ariel {
         void updateSorted();
         void sortElements();
 
-        std::vector<int> getElements(){return elements;}
-        std::vector<size_t> getSortedElements(){return _psorted;}
-        std::vector<int*> getCrossElements(){return _pcross;}
 
+
+    // ==================================================
+    //              AscendingIterator 
+    // ==================================================
 
         class AscendingIterator {
 
         private:
             MagicalContainer &container;
-            std::vector<size_t>::iterator iter;
+            std::vector<int>::iterator iter;
 
         public:
             // Constructors and assignment operator
             AscendingIterator() = delete;
-            AscendingIterator(MagicalContainer& container) : container(container), iter(container._psorted.begin()) {}
+            AscendingIterator(MagicalContainer& container) : container(container), iter(container.elements.begin()) {}
             AscendingIterator(const AscendingIterator& other) : container(other.container), iter(other.iter) {}
             AscendingIterator& operator=(const AscendingIterator& other);
 
@@ -71,6 +70,11 @@ namespace ariel {
             AscendingIterator begin();
             AscendingIterator end();
         };
+
+
+    // ==================================================
+    //              PrimteIterator 
+    // ==================================================
 
         class PrimeIterator {
 
@@ -98,6 +102,11 @@ namespace ariel {
             PrimeIterator end();
         };
 
+
+    // ==================================================
+    //              SideIterator 
+    // ==================================================
+
         class SideCrossIterator {
 
         private:
@@ -124,6 +133,10 @@ namespace ariel {
             SideCrossIterator end();
             };
     };
+
+
+
+    bool isPrime(int);
 
 }
 

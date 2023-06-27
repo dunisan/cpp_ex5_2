@@ -6,15 +6,20 @@ namespace ariel {
 // Magical Container functions
 // ==================================================
 
+
+    MagicalContainer& MagicalContainer::operator=(const MagicalContainer& other) {
+        if (this != &other) {
+            elements = other.elements;
+        }
+        return *this;
+    }
+
     void MagicalContainer::addElement(int element) {
         elements.push_back(element);
-        _psorted.insert(_psorted.begin(), elements.size() - 1);
+        sortElements();
         updateCross();
         updatePrime();
-        updateSorted();
-
         
-       
     }
 
     void MagicalContainer::removeElement(int element) {
@@ -25,12 +30,8 @@ namespace ariel {
         }
         // Remove the element
         elements.erase(itr);
-        size_t position = static_cast<size_t>(std::distance(elements.begin(), itr));
-        auto eraseIterator = _psorted.begin() + static_cast<std::ptrdiff_t>(position);
-        _psorted.erase(eraseIterator);
 
-        // Update the vectors of pointers 
-        updateSorted();
+        // Update the vectors of pointers (all updates runtime is O(n)!)
         updatePrime();
         updateCross();
     }
@@ -41,6 +42,7 @@ namespace ariel {
 
 // *****************************
 // update function 
+// *****************************
 
     void MagicalContainer::updateCross() {
         _pcross.clear();
@@ -68,46 +70,6 @@ namespace ariel {
         }
     }
 
-    void MagicalContainer::updateSorted() {
-        // _psorted.clear();
-        // for (auto itr = elements.begin(); itr != elements.end(); ++itr) {
-        //     _psorted.push_back(&(*itr));
-        // }
-
-        std::size_t length = _psorted.size(); // get size of vector 
-
-        // bubble sort - every time we run it - we run it on a sorted vector.
-        // except for the first - so we need at most n comperisions. O(N) 
-        // for(std::size_t i=0; i <  _psorted.size();i++){
-        //     std::cout<<*_psorted[i] << "  "; 
-        // }
-        //             std::cout<< std::endl; 
-
-
-        for (std::size_t i = 0; i < length; ++i) {
-            bool swapped = false;
-            
-            for (std::size_t j = 0; j < length - i - 1; j++) {
-                if (elements[(_psorted[j])] > elements[(_psorted[j+1])]) {
-                    size_t temp = _psorted[j];
-                    _psorted[j] = _psorted[j+1]; 
-                    _psorted[j+1] = temp; 
-                    swapped = true;
-                }
-                else{
-                    swapped = true; 
-                    break; 
-                }
-            }
-            
-            // If no swaps were made in the inner loop, the array is already sorted
-            if (!swapped) {
-                break;
-            }
-        }
-
-        
-    }
 
     void MagicalContainer::sortElements() {
         
@@ -137,6 +99,7 @@ namespace ariel {
 
     // ***************
     // oprators
+    // ***************
 
     MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator=(const AscendingIterator& other) {
         if (&container != &other.container) {
@@ -179,31 +142,32 @@ namespace ariel {
     }
 
     int MagicalContainer::AscendingIterator::operator*() const {
-        if (iter == container._psorted.end()) {
+        if (iter == container.elements.end()) {
             throw std::out_of_range("Iterator out of range");
         }
 
-        return this->container.elements[*iter];
+        return *iter; 
     }
 
     MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator++() {
-        if (iter == container._psorted.end()) {
+        if (iter == container.elements.end()) {
             throw std::runtime_error("Iterator out of range");
         }
 
         ++iter;
         return *this;
     }
-    // ****************
+    // ***********************
     // Begin and end functions 
+    // ***********************
 
     MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin() {
-        iter = container._psorted.begin();
+        iter = container.elements.begin();
         return *this;
     }
 
     MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() {
-        iter = container._psorted.end();
+        iter = container.elements.end();
         return *this;
     }
 
