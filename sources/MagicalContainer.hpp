@@ -20,6 +20,7 @@ namespace ariel {
         std::vector<int> elements; // The vector of the elements
         std::vector<int*> _pprime; // Vector of pointers to prime elements. 
         std::vector<int*> _pcross; // Vector of pointers to cross elements. 
+        std::vector<int*> _psorted; // Vector of pointers to cross elements. 
 
     public:
 
@@ -41,34 +42,47 @@ namespace ariel {
 
 
 
+
+    // ==================================================
+    //                    Iterator 
+    // ==================================================
+
+        class Iterator {
+
+        protected:
+            MagicalContainer& container;
+            std::vector<int*>::iterator iter;
+
+        public:
+            // Constructors and assignment operator
+            Iterator() = delete;
+            Iterator(MagicalContainer& cont, std::vector<int*>::iterator iter ) : container(cont), iter(iter) {}
+            Iterator(const Iterator& other) : container(other.container), iter(other.iter) {}
+            Iterator& operator=(const Iterator& other);
+
+            // Operators: ==, !=, >, <, *, ++
+            bool operator==(const Iterator& other) const;
+            bool operator!=(const Iterator& other) const;
+            bool operator<(const Iterator& other) const;
+            bool operator>(const Iterator& other) const;
+            virtual int operator*(); // The dynamic cast need a v-table so the decleration of virtual forces to make one for the object 
+            Iterator& operator++();
+
+            // Begin and end iterators
+            Iterator begin();
+            Iterator end();
+        };
+
+
+
     // ==================================================
     //              AscendingIterator 
     // ==================================================
 
-        class AscendingIterator {
+        class AscendingIterator: public Iterator{
 
-        private:
-            MagicalContainer &container;
-            std::vector<int>::iterator iter;
-
-        public:
-            // Constructors and assignment operator
-            AscendingIterator() = delete;
-            AscendingIterator(MagicalContainer& container) : container(container), iter(container.elements.begin()) {}
-            AscendingIterator(const AscendingIterator& other) : container(other.container), iter(other.iter) {}
-            AscendingIterator& operator=(const AscendingIterator& other);
-
-            // Operators: ==, !=, >, <, *, ++
-            bool operator==(const AscendingIterator& other) const;
-            bool operator!=(const AscendingIterator& other) const;
-            bool operator<(const AscendingIterator& other) const;
-            bool operator>(const AscendingIterator& other) const;
-            int operator*() const;
-            AscendingIterator& operator++();
-
-            // Begin and end of iterator
-            AscendingIterator begin();
-            AscendingIterator end();
+            public:
+                AscendingIterator(MagicalContainer& container) : Iterator(container, container._psorted.begin()) {}
         };
 
 
@@ -76,30 +90,10 @@ namespace ariel {
     //              PrimteIterator 
     // ==================================================
 
-        class PrimeIterator {
+        class PrimeIterator: public Iterator{
 
-        private:
-            MagicalContainer& container;
-            std::vector<int*>::iterator iter;
-
-        public:
-            // Constructors and assignment operator
-            PrimeIterator() = delete;
-            PrimeIterator(MagicalContainer& cont) : container(cont), iter(container._pprime.begin()) {}
-            PrimeIterator(const PrimeIterator& other) : container(other.container), iter(other.iter) {}
-            PrimeIterator& operator=(const PrimeIterator& other);
-
-            // Operators: ==, !=, >, <, *, ++
-            bool operator==(const PrimeIterator& other) const;
-            bool operator!=(const PrimeIterator& other) const;
-            bool operator<(const PrimeIterator& other) const;
-            bool operator>(const PrimeIterator& other) const;
-            int operator*() const;
-            PrimeIterator& operator++();
-
-            // Begin and end iterators
-            PrimeIterator begin();
-            PrimeIterator end();
+            public:
+                PrimeIterator(MagicalContainer& cont) : Iterator(cont, cont._pprime.begin()) {}
         };
 
 
@@ -107,31 +101,11 @@ namespace ariel {
     //              SideIterator 
     // ==================================================
 
-        class SideCrossIterator {
-
-        private:
-            MagicalContainer& container;
-            std::vector<int*>::iterator iter;
+        class SideCrossIterator: public Iterator {
 
         public:
-            // Constructors and assignment operator
-            SideCrossIterator() = delete;
-            SideCrossIterator(MagicalContainer& cont) : container(cont), iter(cont._pcross.begin()) {}
-            SideCrossIterator(const SideCrossIterator& other) : container(other.container), iter(other.iter) {}
-            SideCrossIterator& operator=(const SideCrossIterator& other);
-
-            // Operators: ==, !=, >, <, *, ++
-            bool operator==(const SideCrossIterator& other) const;
-            bool operator!=(const SideCrossIterator& other) const;
-            bool operator<(const SideCrossIterator& other) const;
-            bool operator>(const SideCrossIterator& other) const;
-            int operator*() const;
-            SideCrossIterator& operator++();
-
-            // Begin and end iterators
-            SideCrossIterator begin();
-            SideCrossIterator end();
-            };
+            SideCrossIterator(MagicalContainer& cont) : Iterator(cont, cont._pcross.begin()) {}
+        };
     };
 
 
@@ -139,4 +113,3 @@ namespace ariel {
     bool isPrime(int);
 
 }
-

@@ -19,6 +19,7 @@ namespace ariel {
         sortElements();
         updateCross();
         updatePrime();
+        updateSorted();
         
     }
 
@@ -70,6 +71,15 @@ namespace ariel {
         }
     }
 
+        
+    void MagicalContainer::updateSorted() {
+        _psorted.clear();
+        for (auto itr = elements.begin(); itr != elements.end(); ++itr) {
+            _psorted.push_back(&(*itr));
+        }
+    }
+
+
 
     void MagicalContainer::sortElements() {
         
@@ -94,14 +104,14 @@ namespace ariel {
         }
     }
 // ==================================================
-//  AscendingIterator functions
+// Iterator functions
 // ==================================================
 
     // ***************
     // oprators
     // ***************
 
-    MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator=(const AscendingIterator& other) {
+    MagicalContainer::Iterator& MagicalContainer::Iterator::operator=(const Iterator& other) {
         if (&container != &other.container) {
             throw std::runtime_error("assignment is not valid - different containers");
         }
@@ -110,7 +120,7 @@ namespace ariel {
         return *this;
     }
 
-    bool MagicalContainer::AscendingIterator::operator==(const AscendingIterator& other) const {
+    bool MagicalContainer::Iterator::operator==(const Iterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("compering is not valid - different containers");
         }
@@ -118,14 +128,14 @@ namespace ariel {
         return iter == other.iter;
     }
 
-    bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator& other) const {
+    bool MagicalContainer::Iterator::operator!=(const Iterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("compering is not valid - different containers");
         }
         return !(*this == other);
     }
 
-    bool MagicalContainer::AscendingIterator::operator<(const AscendingIterator& other) const {
+    bool MagicalContainer::Iterator::operator<(const Iterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("compering is not valid - different containers");
         }
@@ -133,7 +143,7 @@ namespace ariel {
         return iter < other.iter;
     }
 
-    bool MagicalContainer::AscendingIterator::operator>(const AscendingIterator& other) const {
+    bool MagicalContainer::Iterator::operator>(const Iterator& other) const {
         if (&container != &other.container) {
             throw std::invalid_argument("compering is not valid - different containers");
         }
@@ -141,17 +151,44 @@ namespace ariel {
         return iter > other.iter;
     }
 
-    int MagicalContainer::AscendingIterator::operator*() const {
-        if (iter == container.elements.end()) {
-            throw std::out_of_range("Iterator out of range");
+    int MagicalContainer::Iterator::operator*() {
+
+        if (dynamic_cast<AscendingIterator*>(this)) {
+            if (iter == container._psorted.end()) {
+                throw std::out_of_range("Iterator out of range");
+            }           
+
+        } else if (dynamic_cast<PrimeIterator*>(this)) {
+            if (iter == container._pprime.end()) {
+                throw std::out_of_range("Iterator out of range");
+            }
+        } else{
+
+            if (iter == container._pcross.end()) {
+                throw std::out_of_range("Iterator out of range");
+            }
         }
 
-        return *iter; 
+        return **iter; 
     }
 
-    MagicalContainer::AscendingIterator& MagicalContainer::AscendingIterator::operator++() {
-        if (iter == container.elements.end()) {
-            throw std::runtime_error("Iterator out of range");
+    MagicalContainer::Iterator& MagicalContainer::Iterator::operator++() {
+
+
+        if (dynamic_cast<AscendingIterator*>(this)) {
+            if (iter == container._psorted.end()) {
+                throw std::runtime_error("Iterator out of range");
+            }
+
+        } else if (dynamic_cast<PrimeIterator*>(this)) {
+            if (iter == container._pprime.end()) {
+                throw std::runtime_error("Iterator out of range");
+            }
+        } else{
+
+            if (iter == container._pcross.end()) {
+                throw std::runtime_error("Iterator out of range");
+            }
         }
 
         ++iter;
@@ -161,160 +198,33 @@ namespace ariel {
     // Begin and end functions 
     // ***********************
 
-    MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin() {
-        iter = container.elements.begin();
+    MagicalContainer::Iterator MagicalContainer::Iterator::begin() {
+
+        if (dynamic_cast<AscendingIterator*>(this)) {
+            iter = container._psorted.begin();
+
+        } else if (dynamic_cast<PrimeIterator*>(this)) {
+            iter = container._pprime.begin();
+       
+        } else{
+            iter = container._pcross.begin();
+        }
         return *this;
     }
 
-    MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() {
-        iter = container.elements.end();
+    MagicalContainer::Iterator MagicalContainer::Iterator::end() {
+        if (dynamic_cast<AscendingIterator*>(this)) {
+            iter = container._psorted.end();
+
+        } else if (dynamic_cast<PrimeIterator*>(this)) {
+            iter = container._pprime.end();
+       
+        } else{
+            iter = container._pcross.end();
+        }
         return *this;
     }
 
-// ==================================================
-// PrimeIterator functions
-// ==================================================
-
-    bool MagicalContainer::PrimeIterator::operator==(const PrimeIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter == other.iter;
-    }
-
-    bool MagicalContainer::PrimeIterator::operator!=(const PrimeIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-        return !(*this == other);
-    }
-
-    bool MagicalContainer::PrimeIterator::operator<(const PrimeIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter < other.iter;
-    }
-
-    bool MagicalContainer::PrimeIterator::operator>(const PrimeIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter > other.iter;
-    }
-
-    int MagicalContainer::PrimeIterator::operator*() const {
-        if (iter == container._pprime.end()) {
-            throw std::out_of_range("Iterator out of range");
-        }
-
-        return **iter;
-    }
-
-    MagicalContainer::PrimeIterator& MagicalContainer::PrimeIterator::operator++() {
-        if (iter == container._pprime.end()) {
-            throw std::runtime_error("Iterator out of range");
-        }
-
-        ++iter;
-        return *this;
-    }
-
-    MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::begin() {
-        iter = container._pprime.begin();
-        return *this;
-    }
-
-    MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::end() {
-        iter = container._pprime.end();
-        return *this;
-    }
-
-    MagicalContainer::PrimeIterator& MagicalContainer::PrimeIterator::operator=(const PrimeIterator& other) {
-        if (&container != &other.container) {
-            throw std::runtime_error("You can't assign iterators from different containers");
-        }
-
-        iter = other.iter;
-        return *this;
-    }
-
-
-
-// ==================================================
-// SideCrossIterator functions
-// ==================================================
-
-    bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter == other.iter;
-    }
-
-    bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return !(*this == other);
-    }
-
-    bool MagicalContainer::SideCrossIterator::operator<(const SideCrossIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter < other.iter;
-    }
-
-    bool MagicalContainer::SideCrossIterator::operator>(const SideCrossIterator& other) const {
-        if (&container != &other.container) {
-            throw std::invalid_argument("Comparing iterators from different containers");
-        }
-
-        return iter > other.iter;
-    }
-
-    int MagicalContainer::SideCrossIterator::operator*() const {
-        if (iter == container._pcross.end()) {
-            throw std::out_of_range("Iterator out of range");
-        }
-
-        return **iter;
-    }
-
-    MagicalContainer::SideCrossIterator& MagicalContainer::SideCrossIterator::operator++() {
-        if (iter == container._pcross.end()) {
-            throw std::runtime_error("Iterator out of range");
-        }
-
-        ++iter;
-        return *this;
-    }
-
-    MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::begin() {
-        iter = container._pcross.begin();
-        return *this;
-    }
-
-    MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end() {
-        iter = container._pcross.end();
-        return *this;
-    }
-
-    MagicalContainer::SideCrossIterator& MagicalContainer::SideCrossIterator::operator=(const SideCrossIterator& other) {
-        if (&container != &other.container) {
-            throw std::runtime_error("You can't assign iterators from different containers");
-        }
-
-        iter = other.iter;
-        return *this;
-    }
 
 
 

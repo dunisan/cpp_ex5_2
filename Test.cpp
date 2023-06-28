@@ -6,6 +6,10 @@ using namespace ariel;
 using namespace std;
 
 
+
+// ==================================================
+//            Magical Container Tests
+// ==================================================
 TEST_SUITE("Magical Element"){
 
     TEST_CASE("Add Elements") {
@@ -81,7 +85,55 @@ TEST_SUITE("Magical Element"){
 
 }
 
+
+// ==================================================
+//              AscendingIterator 
+// ==================================================
+
 TEST_SUITE("AscendingIterator"){
+
+    TEST_CASE("AscendingIterator") {
+    SUBCASE("copy constructor") {
+        MagicalContainer container;
+        container.addElement(1); 
+        container.addElement(2); 
+        container.addElement(3); 
+        container.addElement(4); 
+        container.addElement(5); 
+
+        MagicalContainer::AscendingIterator originalIterator(container);
+        ++originalIterator;
+        ++originalIterator;
+        MagicalContainer::AscendingIterator copiedIterator(originalIterator);
+        CHECK_EQ(*originalIterator, 3);
+        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
+        CHECK_EQ(originalIterator.end(), copiedIterator.end());
+    }
+
+    SUBCASE("assignment operator") {
+        MagicalContainer container;
+        container.addElement(1); 
+        container.addElement(2); 
+        container.addElement(3); 
+        container.addElement(4);
+        container.addElement(5);
+
+        MagicalContainer::AscendingIterator originalIterator(container);
+        MagicalContainer::AscendingIterator assignedIterator(container);
+
+        ++originalIterator;
+        ++originalIterator;
+
+        assignedIterator = originalIterator;
+        CHECK_EQ(*originalIterator, 3);
+
+        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
+        CHECK_EQ(originalIterator.end(), assignedIterator.end());
+
+        
+        }
+    }
+
 
     TEST_CASE("Iterating") {
 
@@ -176,7 +228,51 @@ TEST_SUITE("AscendingIterator"){
     }
 }
 
+// ==================================================
+//              SideIterator 
+// ==================================================
+
 TEST_SUITE("SideCrossIterator"){
+
+    TEST_CASE("copy constructor") {
+        MagicalContainer container;
+        container.addElement(1); 
+        container.addElement(2);
+        container.addElement(3); 
+        container.addElement(4); 
+        container.addElement(5); 
+
+        MagicalContainer::SideCrossIterator originalIterator(container);
+        ++originalIterator;
+        ++originalIterator;
+        MagicalContainer::SideCrossIterator copiedIterator(originalIterator);
+        CHECK_EQ(*originalIterator, 2);
+        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
+        CHECK_EQ(originalIterator.end(), copiedIterator.end());
+    }
+
+    TEST_CASE("assignment operator") {
+        MagicalContainer container;
+        container.addElement(1); 
+        container.addElement(2); 
+        container.addElement(3);
+        container.addElement(4);
+        container.addElement(5); 
+
+        MagicalContainer::SideCrossIterator originalIterator(container);
+        MagicalContainer::SideCrossIterator assignedIterator(container);
+
+        ++originalIterator;
+        ++originalIterator;
+
+        assignedIterator = originalIterator;
+        CHECK_EQ(*originalIterator, 2);
+
+        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
+        CHECK_EQ(originalIterator.end(), assignedIterator.end());
+    }
+
+
     TEST_CASE("Iterating") {
 
         SUBCASE("iterating over an empty container") {
@@ -270,7 +366,53 @@ TEST_SUITE("SideCrossIterator"){
  
 }
 
+
+// ==================================================
+//              PrimteIterator 
+// ==================================================
+
 TEST_SUITE("PrimeIterator"){
+
+
+
+    TEST_CASE("copy constructor") {
+        MagicalContainer container;
+        container.addElement(2); 
+        container.addElement(3); 
+        container.addElement(5);
+        container.addElement(7); 
+        container.addElement(11);
+
+        MagicalContainer::PrimeIterator originalIterator(container);
+        ++originalIterator;
+        ++originalIterator;
+        MagicalContainer::PrimeIterator copiedIterator(originalIterator);
+        CHECK_EQ(*originalIterator, 5);
+        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
+        CHECK_EQ(originalIterator.end(), copiedIterator.end());
+    }
+
+    TEST_CASE("assignment operator") {
+        MagicalContainer container;
+        container.addElement(2); 
+        container.addElement(3);
+        container.addElement(5); 
+        container.addElement(7); 
+        container.addElement(11); 
+
+        MagicalContainer::PrimeIterator originalIterator(container);
+        MagicalContainer::PrimeIterator assignedIterator(container);
+
+        ++originalIterator;
+        ++originalIterator;
+
+        assignedIterator = originalIterator;
+        CHECK_EQ(*originalIterator, 5);
+
+        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
+        CHECK_EQ(originalIterator.end(), assignedIterator.end());
+    }
+
 
     TEST_CASE("Iterating") {
         
@@ -366,125 +508,7 @@ TEST_SUITE("PrimeIterator"){
     }
 }
 
-TEST_CASE("AscendingIterator") {
-    SUBCASE("copy constructor") {
-        MagicalContainer container;
-        container.addElement(1); // Add the first element
-        container.addElement(2); // Add the second element
-        container.addElement(3); // Add the third element
-        container.addElement(4); // Add the fourth element
-        container.addElement(5); // Add the fifth element
-
-        MagicalContainer::AscendingIterator originalIterator(container);
-        ++originalIterator;
-        ++originalIterator;
-        MagicalContainer::AscendingIterator copiedIterator(originalIterator);
-        CHECK_EQ(*originalIterator, 3);
-        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
-        CHECK_EQ(originalIterator.end(), copiedIterator.end());
-    }
-
-    SUBCASE("assignment operator") {
-        MagicalContainer container;
-        container.addElement(1); // Add the first element
-        container.addElement(2); // Add the second element
-        container.addElement(3); // Add the third element
-        container.addElement(4); // Add the fourth element
-        container.addElement(5); // Add the fifth element
-
-        MagicalContainer::AscendingIterator originalIterator(container);
-        MagicalContainer::AscendingIterator assignedIterator(container);
-
-        ++originalIterator;
-        ++originalIterator;
-
-        assignedIterator = originalIterator;
-        CHECK_EQ(*originalIterator, 3);
-
-        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
-        CHECK_EQ(originalIterator.end(), assignedIterator.end());
-
-        
-    }
-}
 
 
-TEST_CASE("PrimeIterator") {
-    SUBCASE("copy constructor") {
-        MagicalContainer container;
-        container.addElement(2); // Add the first prime number
-        container.addElement(3); // Add the second prime number
-        container.addElement(5); // Add the third prime number
-        container.addElement(7); // Add the fourth prime number
-        container.addElement(11); // Add the fifth prime number
 
-        MagicalContainer::PrimeIterator originalIterator(container);
-        ++originalIterator;
-        ++originalIterator;
-        MagicalContainer::PrimeIterator copiedIterator(originalIterator);
-        CHECK_EQ(*originalIterator, 5);
-        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
-        CHECK_EQ(originalIterator.end(), copiedIterator.end());
-    }
 
-    SUBCASE("assignment operator") {
-        MagicalContainer container;
-        container.addElement(2); // Add the first prime number
-        container.addElement(3); // Add the second prime number
-        container.addElement(5); // Add the third prime number
-        container.addElement(7); // Add the fourth prime number
-        container.addElement(11); // Add the fifth prime number
-
-        MagicalContainer::PrimeIterator originalIterator(container);
-        MagicalContainer::PrimeIterator assignedIterator(container);
-
-        ++originalIterator;
-        ++originalIterator;
-
-        assignedIterator = originalIterator;
-        CHECK_EQ(*originalIterator, 5);
-
-        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
-        CHECK_EQ(originalIterator.end(), assignedIterator.end());
-    }
-}
-
-TEST_CASE("SideCrossIterator") {
-    SUBCASE("copy constructor") {
-        MagicalContainer container;
-        container.addElement(1); // Add the first element
-        container.addElement(2); // Add the second element
-        container.addElement(3); // Add the third element
-        container.addElement(4); // Add the fourth element
-        container.addElement(5); // Add the fifth element
-
-        MagicalContainer::SideCrossIterator originalIterator(container);
-        ++originalIterator;
-        ++originalIterator;
-        MagicalContainer::SideCrossIterator copiedIterator(originalIterator);
-        CHECK_EQ(*originalIterator, 2);
-        CHECK_EQ(originalIterator.begin(), copiedIterator.begin());
-        CHECK_EQ(originalIterator.end(), copiedIterator.end());
-    }
-
-    SUBCASE("assignment operator") {
-        MagicalContainer container;
-        container.addElement(1); // Add the first element
-        container.addElement(2); // Add the second element
-        container.addElement(3); // Add the third element
-        container.addElement(4); // Add the fourth element
-        container.addElement(5); // Add the fifth element
-
-        MagicalContainer::SideCrossIterator originalIterator(container);
-        MagicalContainer::SideCrossIterator assignedIterator(container);
-
-        ++originalIterator;
-        ++originalIterator;
-
-        assignedIterator = originalIterator;
-        CHECK_EQ(*originalIterator, 2);
-
-        CHECK_EQ(originalIterator.begin(), assignedIterator.begin());
-        CHECK_EQ(originalIterator.end(), assignedIterator.end());
-    }
-}
