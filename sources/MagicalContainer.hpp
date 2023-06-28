@@ -59,6 +59,7 @@ namespace ariel {
             Iterator(MagicalContainer& cont, std::vector<int*>::iterator iter ) : container(cont), iter(iter) {}
             Iterator(const Iterator& other) : container(other.container), iter(other.iter) {}
             Iterator& operator=(const Iterator& other);
+            virtual ~Iterator() = default;
 
             // Operators: ==, !=, >, <, *, ++
             bool operator==(const Iterator& other) const;
